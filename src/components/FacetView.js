@@ -36,13 +36,12 @@ var FacetView = React.createClass({
 				.replace(/\s+\([0-9]+\)\s*$/, ""),
 			params = {};
 		params[facetName] = [facetValue];
-
 		appDispatcher.dispatch({
 			actionType: 'query-update',
 			params: {
 				query: QueryParams.data.query,
 				coll: QueryParams.data.coll,
-				facets: assign(QueryParams.data.facets, params || {})
+				facets: assign(QueryParams.data.facets || {}, params || {})
 			}
 		});
 	},
