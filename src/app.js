@@ -10,9 +10,9 @@ var App = React.createClass({
 		return (
 			<div>
 				<SearchForm />
+				<FacetView periode="Periode" spatial="Verspreidingsgebied" type="Soort bericht" shelfmark="Herkomst" typeFacet="Tijschriftonderdeel" />
 				<QueryFeedbackView ddd="kranten" boeken="boeken" dts="tijdschriften" />
 				<ResultView />
-				<FacetView />
 			</div>
 		);
 	}

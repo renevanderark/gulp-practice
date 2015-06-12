@@ -7,7 +7,14 @@ var gulp = require('gulp'),
 	buffer = require('vinyl-buffer'),
 	sourcemaps = require('gulp-sourcemaps'),
 	reactify = require('reactify'),
-	babel = require('gulp-babel');
+	babel = require('gulp-babel'),
+	stylus = require('gulp-stylus');
+
+gulp.task('style', function() {
+	gulp.src('./style/**/*.styl')
+		.pipe(stylus())
+		.pipe(gulp.dest('./dist/css/'));
+});
 
 gulp.task('build', function() {
 	var bundledStream = through();
@@ -28,5 +35,6 @@ gulp.task('build', function() {
 });
 
 gulp.task('watch', function() {
-	gulp.watch('./src/**/*.js', ['build']);
+	gulp.watch('./src/**/*.js', ['build']).on('error', function(err) { console.log(err.toString())});
+	gulp.watch('./style/**/*.styl', ['style']);
 });

@@ -11,8 +11,7 @@ var SearchForm = React.createClass({
 	},
 
 	_onQueryChange: function() {
-		this.setState(QueryParams.data);
-		this.performSearch();
+		this.setState(QueryParams.data, this.performSearch);
 	},
 
 	getInitialState: function() {
@@ -62,7 +61,7 @@ var SearchForm = React.createClass({
 
 	render: function() {
 		return (
-			<div>
+			<div className="search-form">
 				<select onChange={this.setColl}>
 					<option value="boeken">Boeken</option>
 					<option value="ddd">Kranten</option>
