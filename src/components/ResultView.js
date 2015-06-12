@@ -1,17 +1,31 @@
 var React = require('react'),
-	ResultSet = require('../stores/ResultSet');
+	ResultSet = require('../stores/ResultSet'),
+	QueryParams = require('../stores/QueryParams');
+
 
 var ResultView = React.createClass({
+	getInitialState: function() {
+		return {resultPending: false};
+	},
+
 	componentDidMount: function() { 
 		ResultSet.addChangeListener(this._onChange);
+		QueryParams.addChangeListener(this._onQueryChange)
 	},
 
 	_onChange: function() {
 		this.setState(ResultSet.data);
+		this.setState({resultPending: false});
+	},
+
+	_onQueryChange: function() {
+		this.setState({resultPending: true});
 	},
 
 	render: function() {
-		if(ResultSet.data.numberOfRecords > 0) {
+		if(this.state.resultPending) {
+			return (<div>Bezig met zoeken...</div>);
+		} else if(ResultSet.data.numberOfRecords > 0) {
 			return (
 				<div>
 					<h2>Gevonden: {ResultSet.data.numberOfRecords} </h2>

@@ -1,12 +1,24 @@
 var React = require('react'),
 	api = require('../api/search'),
 	appDispatcher = require('../appDispatcher'),
-	ResultSet = require('../stores/ResultSet');
+	ResultSet = require('../stores/ResultSet'),
+	QueryParams = require('../stores/QueryParams');
+
 
 var SearchForm = React.createClass({
-	getInitialState: function() {
-		return {query: "water", coll: "boeken"};
+	componentDidMount: function() { 
+		QueryParams.addChangeListener(this._onQueryChange);
 	},
+
+	_onQueryChange: function() {
+		this.setState(QueryParams.data);
+		this.performSearch();
+	},
+
+	getInitialState: function() {
+		return QueryParams.data;
+	},
+
 	onError: function(data) {
 		console.log(data);
 	},
@@ -20,7 +32,7 @@ var SearchForm = React.createClass({
 		});
 	},
 
-	performSearch: function(e) {
+	performSearch: function() {
 		api.query({query: this.state.query, coll: this.state.coll}, this.onSuccess, this.onError);
 	},
 
@@ -29,11 +41,23 @@ var SearchForm = React.createClass({
 	},
 
 	handleKey: function(event) {
-		if(event.keyCode === 13) { this.performSearch(); }
+		if(event.keyCode === 13) { 
+			this.dispatchQuery();
+		}
+	},
+
+	dispatchQuery: function() {
+		appDispatcher.dispatch({
+			actionType: 'query-update',
+			params: {query: this.state.query, coll: this.state.coll}
+		});
 	},
 
 	setColl: function(event) {
-		this.setState({coll: event.target.value}, this.performSearch);
+		appDispatcher.dispatch({
+			actionType: 'query-update',
+			params: {coll: event.target.value, query: this.state.query}
+		});
 	},
 
 	render: function() {
@@ -45,7 +69,7 @@ var SearchForm = React.createClass({
 					<option value="dts">Tijdschriften</option>
 				</select>
 				<input type="text" value={this.state.query} onKeyDown={this.handleKey} onChange={this.handleChange} />
-				<button onClick={this.performSearch}>Zoeken</button>
+				<button onClick={this.dispatchQuery}>Zoeken</button>
 			</div>
 		);
 	}
