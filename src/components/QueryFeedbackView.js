@@ -13,12 +13,18 @@ var QueryFeedbackView = React.createClass({
 
 	componentDidMount: function() { 
 		QueryParams.addChangeListener(this._onQueryChange);
-		ResultSet.addChangeListener(this._onResultSetChange)
+		QueryParams.addResetListener(this._onQueryReset);
+
+		ResultSet.addChangeListener(this._onResultSetChange);
 	},
 
 	_onQueryChange: function() {
 		this.setState({queryParams: QueryParams.data});
 		this.setState({numberOfRecords: 0});
+	},
+
+	_onQueryReset: function() {
+		this.setState({queryParams: QueryParams.data});
 	},
 
 	_onResultSetChange: function() {

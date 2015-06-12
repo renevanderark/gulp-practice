@@ -15,6 +15,10 @@ appDispatcher.register(function(payload) {
 			QueryParams.data = payload.params;
 			QueryParams.emitUpdate();
 			break;
+		case 'query-reset':
+			QueryParams.data = payload.params;
+			QueryParams.emitReset();
+			break;
 	}
 });
 

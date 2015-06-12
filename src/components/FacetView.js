@@ -1,4 +1,6 @@
 var React = require('react'),
+	assign = require('object-assign'),
+	appDispatcher = require('../appDispatcher'),
 	ResultSet = require('../stores/ResultSet'),
 	QueryParams = require('../stores/QueryParams');
 
@@ -28,7 +30,29 @@ var FacetView = React.createClass({
 	},
 
 	addFilter: function(event) {
-		console.log(event.target);
+		var facetName = event.target.getAttribute("data-facetname"),
+			facetValue = event.target.getAttribute("data-facetvalue")
+				.replace(/\//g, "|")
+				.replace(/\s+\([0-9]+\)\s*$/, ""),
+			params = {};
+		params[facetName] = [facetValue];
+
+		appDispatcher.dispatch({
+			actionType: 'query-update',
+			params: {
+				query: QueryParams.data.query,
+				coll: QueryParams.data.coll,
+				facets: assign(QueryParams.data.facets, params || {})
+			}
+		});
+	},
+
+	getFacetValue: function(val) {
+		return val
+			.replace(/^[0-9]\//, "")
+			.replace(/.*\/([^\/]+)\/\s*(\([0-9]+\))$/, "$1 $2")
+			.replace(/\//g, "")
+			.replace(/_/g, " ");
 	},
 
 	render: function() {
@@ -46,7 +70,7 @@ var FacetView = React.createClass({
 								return (
 									<li key={j}>
 										<a onClick={_self.addFilter} data-facetname={fac.name} data-facetvalue={val}>
-											{val}
+											{_self.getFacetValue(val)}
 										</a>
 									</li>
 								)

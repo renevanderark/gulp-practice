@@ -1,11 +1,12 @@
-var AbstractStore = require('./AbstractStore')
+var AbstractStore = require('./AbstractStore');
 
 class QueryParams extends AbstractStore {
 	constructor() { 
 		super();
 		this.data = {
 			query: "water",
-			coll: "boeken"
+			coll: "boeken",
+			facets: {}
 		}
 	}
 }
