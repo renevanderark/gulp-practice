@@ -16,3 +16,7 @@ a {
 a:hover {
   text-decoration: underline;
 }
+span.blocky {
+  display: inline-block;
+  margin-right: 5px;
+}
