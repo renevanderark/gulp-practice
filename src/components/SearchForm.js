@@ -1,7 +1,7 @@
 var React = require('react'),
-	api = require('./api'),
-	appDispatcher = require('./appDispatcher'),
-	ResultSet = require('./ResultSet');
+	api = require('../api/search'),
+	appDispatcher = require('../appDispatcher'),
+	ResultSet = require('../stores/ResultSet');
 
 var SearchForm = React.createClass({
 	getInitialState: function() {
@@ -45,7 +45,7 @@ var SearchForm = React.createClass({
 					<option value="dts">Tijdschriften</option>
 				</select>
 				<input type="text" value={this.state.query} onKeyDown={this.handleKey} onChange={this.handleChange} />
-				<button onClick={this.performSearch}>test</button>
+				<button onClick={this.performSearch}>Zoeken</button>
 			</div>
 		);
 	}

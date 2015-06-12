@@ -1,7 +1,8 @@
 var React = require('react'),
-	ResultSet = require('./ResultSet');
+	ResultSet = require('../stores/ResultSet');
 
-var ResultView = React.createClass({
+
+var FacetView = React.createClass({
 	componentDidMount: function() { 
 		ResultSet.addChangeListener(this._onChange);
 	},
@@ -14,9 +15,12 @@ var ResultView = React.createClass({
 		if(ResultSet.data.numberOfRecords > 0) {
 			return (
 				<div>
-					<h2>Gevonden: {ResultSet.data.numberOfRecords} </h2>
-					{ResultSet.data.results.map(function(obj, i) {
-						return <div key={obj.identifier.replace(/.*\?urn=/, "").replace(/:/g, "-")}>{obj.title}</div>;
+					<h3>Facetten</h3>
+					{ResultSet.data.facets.map(function(fac, i) {
+						return (<div key={i}>
+							{fac.name}:
+							{fac.values.map(function(val, j) { return <li key={j}>{val}</li>})}
+						</div>);
 					})}
 				</div>
 			);
@@ -26,4 +30,4 @@ var ResultView = React.createClass({
 	}
 });
 
-module.exports = ResultView;
+module.exports = FacetView;

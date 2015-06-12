@@ -1,5 +1,5 @@
-var Dispatcher = require('./dispatcher'),
-	ResultSet = require('./ResultSet'),
+var Dispatcher = require('./lib/dispatcher'),
+	ResultSet = require('./stores/ResultSet'),
 	appDispatcher = new Dispatcher();
 
 appDispatcher.register(function(payload) {
