@@ -13,7 +13,7 @@ var App = React.createClass({
 			<div>
 				<SearchForm />
 				<FacetView periode="Periode" spatial="Verspreidingsgebied" type="Soort bericht" shelfmark="Herkomst" typeFacet="Tijschriftonderdeel" />
-				<QueryFeedbackView ddd="kranten" boeken="boeken" dts="tijdschriften" />
+				<QueryFeedbackView anp="radiobulletins" ddd="kranten" boeken="boeken" dts="tijdschriften" periode="Periode" spatial="Verspreidingsgebied" type="Soort bericht" shelfmark="Herkomst" typeFacet="Tijschriftonderdeel" />
 				<ResultView />
 			</div>
 		);

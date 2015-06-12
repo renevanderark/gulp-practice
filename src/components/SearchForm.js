@@ -73,6 +73,7 @@ var SearchForm = React.createClass({
 					<option value="boeken">Boeken</option>
 					<option value="ddd">Kranten</option>
 					<option value="dts">Tijdschriften</option>
+					<option value="anp">Radiobulletins</option>
 				</select>
 				<input type="text" value={this.state.query} onKeyDown={this.handleKey} onChange={this.handleChange} />
 				<button onClick={this.dispatchQuery}>Zoeken</button>
