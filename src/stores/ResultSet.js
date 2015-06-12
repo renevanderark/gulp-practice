@@ -1,20 +1,14 @@
-var EventEmitter = require('events').EventEmitter,
-	assign = require('object-assign');
+var AbstractStore = require('./AbstractStore')
 
-var ResultSet = assign({}, EventEmitter.prototype, {
-	data: {
-		results: [],
-		numberOfRecords: 0,
-		facets: []
-	},
-
-	emitUpdate: function() {
-		this.emit('change');
-	},
-
-	addChangeListener: function(callback) { 
-		this.on('change', callback); 
+class ResultSet extends AbstractStore {
+	constructor() { 
+		super();
+		this.data = {
+			results: [],
+			numberOfRecords: 0,
+			facets: []
+		}
 	}
-});
+}
 
-module.exports = ResultSet;
+module.exports = new ResultSet();
