@@ -10,7 +10,7 @@ var App = React.createClass({
 		return (
 			<div>
 				<SearchForm />
-				<QueryFeedbackView />
+				<QueryFeedbackView ddd="kranten" boeken="boeken" dts="tijdschriften" />
 				<ResultView />
 				<FacetView />
 			</div>

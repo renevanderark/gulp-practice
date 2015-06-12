@@ -26,7 +26,7 @@ var QueryFeedbackView = React.createClass({
 	},
 
 	getCollName: function() {
-		return this.state.queryParams.coll;
+		return this.props[this.state.queryParams.coll];
 	},
 
 	render: function() {
