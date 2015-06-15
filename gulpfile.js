@@ -1,40 +1,55 @@
 'use strict';
-var gulp = require('gulp'),
-	browserify = require('browserify'),
-	through = require('through2'),
-	globby = require('globby'),
-	source = require('vinyl-source-stream'),
-	buffer = require('vinyl-buffer'),
-	sourcemaps = require('gulp-sourcemaps'),
-	reactify = require('reactify'),
-	babel = require('gulp-babel'),
-	stylus = require('gulp-stylus');
 
-gulp.task('style', function() {
+
+var watchify = require('watchify'),
+	browserify = require('browserify'),
+	babelify = require('babelify'),
+	gulp = require('gulp'),
+	sourcemaps = require('gulp-sourcemaps'),
+	source = require('vinyl-source-stream'),
+	glob = require('glob'),
+	buffer = require('vinyl-buffer'),
+	stylus = require('gulp-stylus'),
+	gutil = require('gulp-util'),
+	opts = {
+		entries: glob.sync('./src/**/*.js'),
+		debug: true
+	};
+
+var b = watchify(browserify(opts))
+	.on('update', bundle)
+	.on('log', gutil.log);
+
+
+gulp.task('build', bundle);
+gulp.task('style', style);
+
+function style() {
+	console.log('--*style*--');
 	gulp.src('./style/**/*.styl')
 		.pipe(stylus())
 		.pipe(gulp.dest('./dist/css/'));
-});
+}
 
-gulp.task('build', function() {
-	var bundledStream = through();
-	bundledStream
+function bundle() {
+	console.log('--*bundle*--');
+	return b
+		.transform(babelify)
+		.bundle()
+		.on("error", logError)
 		.pipe(source('app.js'))
 		.pipe(buffer())
-		.pipe(babel())
 		.pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(sourcemaps.write('./'))
-		.pipe(gulp.dest('./dist/js/'));
+		.pipe(gulp.dest('./dist/js/'))
+}
 
-	globby(['./src/*.js'], function(err, entries) {
-		if (err) { bundledStream.emit('error', err); return }
-		var b = browserify({entries: entries, debug: true, transform: [reactify]});
-		b.bundle().pipe(bundledStream);
-	});
-	return bundledStream;
-});
+function logError(err) {
+	gutil.log("Error : " + err.message);
+	this.emit('end');
+}
 
-gulp.task('watch', function() {
-	gulp.watch('./src/**/*.js', ['build']).on('error', function(err) { console.log(err.toString())});
+gulp.task('default', function() {
+	bundle();
 	gulp.watch('./style/**/*.styl', ['style']);
 });

@@ -3,10 +3,8 @@
   "version": "0.0.1",
   "description": "practice",
   "main": "gulpfile.js",
-  "dependencies": {
+  "devDependencies": {
     "browserify": "~10.2.4",
-    "globby": "~2.0.0",
-    "gulp-babel": "~5.1.0",
     "gulp": "~3.9.0",
     "gulp-sourcemaps": "~1.5.2",
     "gulp-stylus": "~2.0.3",
@@ -14,13 +12,13 @@
     "object-assign": "~3.0.0",
     "qs": "~3.1.0",
     "react": "~0.13.3",
-    "reactify": "~1.1.1",
-    "through2": "~2.0.0",
     "vinyl-buffer": "~1.0.0",
-    "vinyl-source-stream": "~1.1.0",
-    "xhr": "~2.0.1"
+    "xhr": "~2.0.1",
+    "watchify": "~3.2.2",
+    "babelify": "~6.1.2",
+    "gulp-util": "~3.0.5",
+    "vinyl-source-stream": "~1.1.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

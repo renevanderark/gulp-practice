@@ -1,5 +1,4 @@
-var AbstractStore = require('./AbstractStore'),
-	QueryParams = require('./QueryParams');
+var AbstractStore = require('./AbstractStore');
 
 class ResultSet extends AbstractStore {
 	constructor() { 
