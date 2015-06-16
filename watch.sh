@@ -1,6 +1,7 @@
 #!/bin/sh
 mkdir -p dist/css dist/js
 stylus --compress --out dist/css --watch style &
+nodemon -w ./__tests__ -w ./src -e js,jsx -x npm test &
 watchify ./src/app.js \
 	--detect-globals false \
         --extension=.js \
