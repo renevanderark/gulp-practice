@@ -2,6 +2,7 @@ var React = require('react'),
 	appDispatcher = require('../appDispatcher'),
 	ResultSet = require('../stores/ResultSet'),
 	QueryParams = require('../stores/QueryParams'),
+	assign = require('object-assign'),
 	facetString = require('../util/facetString');
 
 
@@ -37,7 +38,7 @@ var FacetView = React.createClass({
 			params: {
 				query: QueryParams.data.query,
 				coll: QueryParams.data.coll,
-				facets: Object.assign(QueryParams.data.facets || {}, params || {})
+				facets: assign(QueryParams.data.facets || {}, params || {})
 			}
 		});
 	},

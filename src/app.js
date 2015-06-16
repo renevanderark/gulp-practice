@@ -19,6 +19,7 @@ var App = React.createClass({
 		);
 	}
 });
+
 React.render(
 	<App />,
 	document.getElementById('app')
@@ -47,3 +48,4 @@ window.onload = function(event) {
 		});
 	}
 };
+

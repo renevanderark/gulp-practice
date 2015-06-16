@@ -46,38 +46,31 @@ var SearchForm = React.createClass({
 		this.setState({query: event.target.value});
 	},
 
-	handleKey: function(event) {
-		if(event.keyCode === 13) { 
-			this.dispatchQuery();
-		}
-	},
 
-	dispatchQuery: function() {
+	dispatchQuery: function(event) {
 		appDispatcher.dispatch({
 			actionType: 'query-update',
 			params: {query: this.state.query, coll: this.state.coll, facets: {}}
 		});
+		return false;
 	},
 
 	setColl: function(event) {
-		appDispatcher.dispatch({
-			actionType: 'query-update',
-			params: {coll: event.target.value, query: this.state.query, facets: {}}
-		});
+		this.setState({coll: event.target.value}, this.dispatchQuery);
 	},
 
 	render: function() {
 		return (
-			<div className="search-form">
+			<form className="search-form" onSubmit={this.dispatchQuery}>
 				<select onChange={this.setColl} value={this.state.coll}>
 					<option value="boeken">Boeken</option>
 					<option value="ddd">Kranten</option>
 					<option value="dts">Tijdschriften</option>
 					<option value="anp">Radiobulletins</option>
 				</select>
-				<input type="text" value={this.state.query} onKeyDown={this.handleKey} onChange={this.handleChange} />
-				<button onClick={this.dispatchQuery}>Zoeken</button>
-			</div>
+				<input type="text" value={this.state.query} onChange={this.handleChange} />
+				<button type="submit">Zoeken</button>
+			</form>
 		);
 	}
 });
