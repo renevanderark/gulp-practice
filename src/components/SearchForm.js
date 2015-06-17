@@ -7,28 +7,28 @@ var React = require('react'),
 
 
 var SearchForm = React.createClass({
-	componentDidMount: function() { 
+	componentDidMount() { 
 		QueryParams.addChangeListener(this._onQueryChange);
 		QueryParams.addResetListener(this._onQueryReset);
 	},
 
-	_onQueryChange: function() {
+	_onQueryChange() {
 		this.setState(QueryParams.data, this.performSearch);
 	},
 
-	_onQueryReset: function() {
+	_onQueryReset() {
 		this.setState(QueryParams.data);
 	},
 
-	getInitialState: function() {
+	getInitialState() {
 		return QueryParams.data;
 	},
 
-	onError: function(data) {
+	onError(data) {
 		console.log(data);
 	},
 
-	onSuccess: function(data) {
+	onSuccess(data) {
 		appDispatcher.dispatch({
 			actionType: 'result-update',
 			records: data.records,
@@ -38,16 +38,16 @@ var SearchForm = React.createClass({
 		history.pushState({resultSet: data, queryParams: QueryParams.data}, "", "?" + qs.stringify(QueryParams.data))
 	},
 
-	performSearch: function() {
+	performSearch() {
 		api.query(QueryParams.data, this.onSuccess, this.onError);
 	},
 
-	handleChange: function(event) {
+	handleChange(event) {
 		this.setState({query: event.target.value});
 	},
 
 
-	dispatchQuery: function(event) {
+	dispatchQuery(event) {
 		appDispatcher.dispatch({
 			actionType: 'query-update',
 			params: {query: this.state.query, coll: this.state.coll, facets: {}}
@@ -55,11 +55,11 @@ var SearchForm = React.createClass({
 		return false;
 	},
 
-	setColl: function(event) {
+	setColl(event) {
 		this.setState({coll: event.target.value}, this.dispatchQuery);
 	},
 
-	render: function() {
+	render() {
 		return (
 			<form className="search-form" onSubmit={this.dispatchQuery}>
 				<select onChange={this.setColl} value={this.state.coll}>

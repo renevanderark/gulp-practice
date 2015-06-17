@@ -10,6 +10,7 @@
     "object-assign": "^3.0.0",
     "qs": "~3.1.0",
     "react": "~0.13.3",
+    "react-router": "^0.13.3",
     "react-tools": "^0.13.3",
     "xhr": "~2.0.1"
   },
@@ -30,5 +31,8 @@
   "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/renevanderark/gulp-practice/issues"
+  },
+  "dependencies": {
+    "react-router": "^0.13.3"
   }
 }

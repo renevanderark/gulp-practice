@@ -7,26 +7,26 @@ var React = require('react'),
 
 
 var FacetView = React.createClass({
-	getInitialState: function() {
+	getInitialState() {
 		return {resultPending: false};
 	},
 
-	componentDidMount: function() { 
+	componentDidMount() { 
 		QueryParams.addChangeListener(this._onQueryChange);
 		ResultSet.addChangeListener(this._onChange);
 	},
 
-	_onChange: function() {
+	_onChange() {
 		this.setState(ResultSet.data);
 		this.setState({resultPending: false});
 
 	},
 
-	_onQueryChange: function() {
+	_onQueryChange() {
 		this.setState({resultPending: true});
 	},
 
-	addFilter: function(event) {
+	addFilter(event) {
 		var facetName = event.target.getAttribute("data-facetname"),
 			facetValue = event.target.getAttribute("data-facetvalue")
 				.replace(/\//g, "|")
@@ -43,7 +43,7 @@ var FacetView = React.createClass({
 		});
 	},
 
-	render: function() {
+	render() {
 		if(ResultSet.data.numberOfRecords === 0 || this.state.resultPending) {
 			return (<div />);
 		} else {

@@ -4,48 +4,58 @@ var React = require('react'),
 	FacetView = require('./components/FacetView'),
 	SearchForm = require('./components/SearchForm'),
 	QueryFeedbackView = require('./components/QueryFeedbackView'),
+	Viewer = require('./components/Viewer'),
+	ReactRouter = require('react-router'),	
+	Route = ReactRouter.Route,
+	RouteHandler = ReactRouter.RouteHandler,
+	DefaultRoute =ReactRouter.DefaultRoute,
 	qs = require('qs');
 
 
 var App = React.createClass({
-	render: function() {
+	render() {
+		return (
+			<div>
+				<h1>Experimental app</h1>
+				<RouteHandler />
+			</div>
+		);		
+	}
+});
+
+var Results = React.createClass({
+	render() {
 		return (
 			<div>
 				<SearchForm />
 				<FacetView periode="Periode" spatial="Verspreidingsgebied" type="Soort bericht" shelfmark="Herkomst" typeFacet="Tijschriftonderdeel" />
 				<QueryFeedbackView anp="radiobulletins" ddd="kranten" boeken="boeken" dts="tijdschriften" periode="Periode" spatial="Verspreidingsgebied" type="Soort bericht" shelfmark="Herkomst" typeFacet="Tijschriftonderdeel" />
-				<ResultView />
+        		<ResultView />
 			</div>
 		);
 	}
 });
 
-React.render(
-	<App />,
-	document.getElementById('app')
+var View = React.createClass({
+	render() {
+		return (
+			<div>
+				<Viewer />
+			</div>
+		);
+	}
+});
+
+
+
+var routes = (
+	<Route name="app" path="/" handler={App}>
+		<Route name="view" path="/view" handler={View} />
+		<DefaultRoute handler={Results} />
+	</Route>
 );
 
-window.onpopstate = function(event) {
-	if(event.state && event.state.resultSet && event.state.queryParams) {
-		appDispatcher.dispatch({
-			actionType: 'result-update',
-			records: event.state.resultSet.records,
-			numberOfRecords: event.state.resultSet.numberOfRecords,
-			facets: event.state.resultSet.facets
-		});
-		appDispatcher.dispatch({
-			actionType: 'query-reset',
-			params: event.state.queryParams
-		});
-	}
-};
-
-window.onload = function(event) {
-	if(location.href.match(/\?/)) {
-		appDispatcher.dispatch({
-			actionType: 'query-update',
-			params: qs.parse(location.href.replace(/.*\?/, ""))
-		});
-	}
-};
+ReactRouter.run(routes, ReactRouter.HistoryLocation, function(Handler) {
+	React.render(<Handler />, document.getElementById('app'));
+});
 

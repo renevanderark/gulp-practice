@@ -6,38 +6,38 @@ var React = require('react'),
 
 
 var QueryFeedbackView = React.createClass({
-	getInitialState: function() {
+	getInitialState() {
 		return {
 			queryParams: QueryParams.data,
 			numberOfRecords: ResultSet.data.numberOfRecords,
 		}
 	},
 
-	componentDidMount: function() { 
+	componentDidMount() { 
 		QueryParams.addChangeListener(this._onQueryChange);
 		QueryParams.addResetListener(this._onQueryReset);
 
 		ResultSet.addChangeListener(this._onResultSetChange);
 	},
 
-	_onQueryChange: function() {
+	_onQueryChange() {
 		this.setState({queryParams: QueryParams.data});
 		this.setState({numberOfRecords: 0});
 	},
 
-	_onQueryReset: function() {
+	_onQueryReset() {
 		this.setState({queryParams: QueryParams.data});
 	},
 
-	_onResultSetChange: function() {
+	_onResultSetChange() {
 		this.setState({numberOfRecords: ResultSet.data.numberOfRecords});
 	},
 
-	getCollName: function() {
+	getCollName() {
 		return this.props[this.state.queryParams.coll];
 	},
 
-	removeFilter: function(event) {
+	removeFilter(event) {
 		console.log(event.target);
 		var params = QueryParams.data;
 		console.log(event.target.getAttribute("data-facetname"));
@@ -48,7 +48,7 @@ var QueryFeedbackView = React.createClass({
 		});
 	},
 
-	renderFacetFilters: function() {
+	renderFacetFilters() {
 		if(!this.state.queryParams.facets) { return; }
 		var _self = this;
 		return Object.keys(this.state.queryParams.facets).map(function(key, i) {
@@ -61,7 +61,7 @@ var QueryFeedbackView = React.createClass({
 		});
 	},
 
-	render: function() {
+	render() {
 		if(this.state.numberOfRecords > 0) {
 			return (
 				<div>

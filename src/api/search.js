@@ -15,5 +15,16 @@ module.exports = (function (my) {
 		});
 	};
 
+	my.view = function(params, success, error) {
+		xhr({
+			uri: "http://delpher.kbresearch.nl/nl/api/resource?type=dc&" + qs.stringify(params)
+		}, function(err, resp, body) {
+			if(resp.statusCode !== 200) {
+				error(JSON.parse(body));
+			} else {
+				success(JSON.parse(body));
+			}
+		});
+	};
 	return my;
 }(module.exports || {}));
