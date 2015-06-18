@@ -8,6 +8,6 @@ describe('QueryfeedbackView', function() {
 		var TestUtils = React.addons.TestUtils;
  		var component = TestUtils.renderIntoDocument( <QueryFeedbackView /> );
  		var div = TestUtils.findRenderedDOMComponentWithTag(component, 'div'); 
- 		expect(div.getDOMNode().textContent).toEqual('');
+ 		expect(div.getDOMNode().textContent).toEqual('Gezocht op alles in ');
 	});
 });

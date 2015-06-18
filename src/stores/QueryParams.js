@@ -4,7 +4,7 @@ class QueryParams extends AbstractStore {
 	constructor() { 
 		super();
 		this.data = {
-			query: "water",
+			query: "",
 			coll: "boeken",
 			facets: {}
 		}

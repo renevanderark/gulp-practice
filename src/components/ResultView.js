@@ -1,9 +1,8 @@
 var React = require('react'),
+	Router =  require('react-router'),
+	Link = Router.Link,
 	ResultSet = require('../stores/ResultSet'),
-	QueryParams = require('../stores/QueryParams'),
-	appDispatcher = require('../appDispatcher'),
-	qs = require("qs");
-
+	QueryParams = require('../stores/QueryParams');
 
 var ResultView = React.createClass({
 	getInitialState() {
@@ -12,43 +11,31 @@ var ResultView = React.createClass({
 
 	componentDidMount() { 
 		ResultSet.addChangeListener(this._onChange);
-		QueryParams.addChangeListener(this._onQueryChange)
-
-		window.onpopstate = function(event) {
-			if(event.state && event.state.resultSet && event.state.queryParams) {
-				appDispatcher.dispatch({
-					actionType: 'result-update',
-					records: event.state.resultSet.records,
-					numberOfRecords: event.state.resultSet.numberOfRecords,
-					facets: event.state.resultSet.facets
-				});
-				appDispatcher.dispatch({
-					actionType: 'query-reset',
-					params: event.state.queryParams
-				});
-			}
-		};
-
-		window.onload = function(event) {
-			if(location.href.match(/\?/)) {
-				appDispatcher.dispatch({
-					actionType: 'query-update',
-					params: qs.parse(location.href.replace(/.*\?/, ""))
-				});
-			}
-		};
+		QueryParams.addResetListener(this._onQueryChange);
+		QueryParams.addChangeListener(this._onQueryChange);
 	},
+ 
+ 	componentWillUnmount() { 
+		ResultSet.removeChangeListener(this._onChange);
+		QueryParams.removeChangeListener(this._onQueryChange);
+		QueryParams.removeResetListener(this._onQueryChange);
+ 	},
 
 	_onChange() {
-		this.setState(ResultSet.data);
-		this.setState({resultPending: false});
+		if(this.isMounted()) {
+			this.setState(ResultSet.data);
+			this.setState({resultPending: false});
+		}
 	},
 
 	_onQueryChange() {
-		this.setState({resultPending: true});
+		if(this.isMounted()) {
+			this.setState({resultPending: true});
+		}
 	},
 
 	render() {
+		var _self = this;
 		if(this.state.resultPending) {
 			return (<div>Bezig met zoeken...</div>);
 		} else if(ResultSet.data.numberOfRecords > 0) {
@@ -57,10 +44,10 @@ var ResultView = React.createClass({
 					<h2>Gevonden: {ResultSet.data.numberOfRecords} </h2>
 					{ResultSet.data.results.map(function(obj, i) {
 						return (
-							<div key={obj.identifier.replace(/.*\?urn=/, "").replace(/:/g, "-")}>
-								<a href={"/view?identifier=" + encodeURIComponent(obj.identifier.replace(/.*\?urn=/, "").replace(":ocr", "")) + "&coll=" + QueryParams.data.coll}>
+							<div key={i}>
+								<Link to="viewer" query={{identifier: obj.identifier.replace(/.*\?urn=/, "").replace(":ocr", ""), coll: QueryParams.data.coll}}>
 									{obj.title}
-								</a>
+								</Link>
 							</div>
 						);
 					})}

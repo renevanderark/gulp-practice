@@ -16,6 +16,14 @@ class AbstractStore extends EventEmitter {
 	addResetListener(callback) {
 		this.on('reset', callback);
 	}
+ 
+ 	removeChangeListener(callback) { 
+ 		this.removeListener('change', callback); 
+ 	}
+
+ 	removeResetListener(callback) { 
+ 		this.removeListener('reset', callback); 
+ 	}
 }
 
 module.exports = AbstractStore;

@@ -1,29 +1,38 @@
 var React = require('react'),
-	appDispatcher = require('../appDispatcher'),
 	ResultSet = require('../stores/ResultSet'),
-	QueryParams = require('../stores/QueryParams'),
+	facetString = require('../util/facetString'),
+	appDispatcher = require('../appDispatcher'),
 	assign = require('object-assign'),
-	facetString = require('../util/facetString');
-
+	QueryParams = require('../stores/QueryParams');
 
 var FacetView = React.createClass({
+
 	getInitialState() {
 		return {resultPending: false};
 	},
 
 	componentDidMount() { 
 		QueryParams.addChangeListener(this._onQueryChange);
+		QueryParams.addResetListener(this._onQueryChange);
+
 		ResultSet.addChangeListener(this._onChange);
 	},
 
-	_onChange() {
-		this.setState(ResultSet.data);
-		this.setState({resultPending: false});
+ 	componentWillUnmount() { 
+		ResultSet.removeChangeListener(this._onChange);
+		QueryParams.removeChangeListener(this._onQueryChange);
+		QueryParams.removeResetListener(this._onQueryChange);
+ 	},
 
+	_onChange() {
+		if(this.isMounted()) {
+			this.setState(ResultSet.data);
+			this.setState({resultPending: false});
+		}
 	},
 
 	_onQueryChange() {
-		this.setState({resultPending: true});
+		if(this.isMounted()) { this.setState({resultPending: true}); }
 	},
 
 	addFilter(event) {
@@ -32,6 +41,7 @@ var FacetView = React.createClass({
 				.replace(/\//g, "|")
 				.replace(/\s+\([0-9]+\)\s*$/, ""),
 			params = {};
+
 		params[facetName] = [facetValue];
 		appDispatcher.dispatch({
 			actionType: 'query-update',

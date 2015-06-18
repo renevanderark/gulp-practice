@@ -1,11 +1,13 @@
 var React = require('react'),
-	qs = require('qs'),
+	Router = require('react-router'),
 	api = require('../api/search');
 
 var Viewer = React.createClass({
-	getInitialState() {
+	mixins : [Router.State],
+
+	getInitialState() {		
 		return {
-			params: qs.parse(location.href.replace(/^.*\?/,"")),
+			params: this.getQuery(),
 			data: {}
 		};
 	},
@@ -25,11 +27,11 @@ var Viewer = React.createClass({
 	render() {
 		var _self = this;
 		return (
-			<dl>
+			<div>
 				{Object.keys(this.state.data).map(function(key, i) {
-					return <div key={i}><dt>{key}:</dt><dd>{_self.state.data[key]}</dd></div>
+					return <div key={i}><span className="blocky">{key}:</span><span>{_self.state.data[key]}</span></div>
 				})}
-			</dl>
+			</div>
 		);
 	}
 });

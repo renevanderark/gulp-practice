@@ -1,58 +1,42 @@
 var React = require('react'),
-	api = require('../api/search'),
+	Router = require('react-router'),
 	appDispatcher = require('../appDispatcher'),
-	ResultSet = require('../stores/ResultSet'),
-	QueryParams = require('../stores/QueryParams'),
-	qs = require('qs');
-
+	api = require('../api/search'),
+	QueryParams = require('../stores/QueryParams');
 
 var SearchForm = React.createClass({
+	mixins : [Router.Navigation, Router.State],
+
 	componentDidMount() { 
 		QueryParams.addChangeListener(this._onQueryChange);
-		QueryParams.addResetListener(this._onQueryReset);
+		QueryParams.addResetListener(this._onQueryChange);
 	},
+
+ 	componentWillUnmount() { 
+		QueryParams.removeChangeListener(this._onQueryChange);
+		QueryParams.removeResetListener(this._onQueryChange);
+ 	},
+
 
 	_onQueryChange() {
-		this.setState(QueryParams.data, this.performSearch);
-	},
-
-	_onQueryReset() {
-		this.setState(QueryParams.data);
+		if(this.isMounted()) { this.setState(QueryParams.data); }
 	},
 
 	getInitialState() {
 		return QueryParams.data;
 	},
 
-	onError(data) {
-		console.log(data);
-	},
-
-	onSuccess(data) {
-		appDispatcher.dispatch({
-			actionType: 'result-update',
-			records: data.records,
-			numberOfRecords: data.numberOfRecords,
-			facets: data.facets
-		});
-		history.pushState({resultSet: data, queryParams: QueryParams.data}, "", "?" + qs.stringify(QueryParams.data))
-	},
-
-	performSearch() {
-		api.query(QueryParams.data, this.onSuccess, this.onError);
-	},
-
 	handleChange(event) {
 		this.setState({query: event.target.value});
 	},
-
 
 	dispatchQuery(event) {
 		appDispatcher.dispatch({
 			actionType: 'query-update',
 			params: {query: this.state.query, coll: this.state.coll, facets: {}}
 		});
-		return false;
+
+		if(typeof event !== 'undefined') { return event.preventDefault(); }
 	},
 
 	setColl(event) {
@@ -68,7 +52,7 @@ var SearchForm = React.createClass({
 					<option value="dts">Tijdschriften</option>
 					<option value="anp">Radiobulletins</option>
 				</select>
-				<input type="text" value={this.state.query} onChange={this.handleChange} />
+				<input placeholder="enter search" type="text" value={this.state.query} onChange={this.handleChange} />
 				<button type="submit">Zoeken</button>
 			</form>
 		);
