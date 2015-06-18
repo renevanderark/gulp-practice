@@ -13,6 +13,7 @@
     "react": "~0.13.3",
     "react-router": "^0.13.3",
     "react-tools": "^0.13.3",
+    "underscore": "^1.8.3",
     "xhr": "~2.0.1"
   },
   "scripts": {

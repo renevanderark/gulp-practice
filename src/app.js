@@ -10,6 +10,8 @@ var React = require('react'),
 	FacetView = require('./components/FacetView'),
 	SearchForm = require('./components/SearchForm'),
 	QueryFeedbackView = require('./components/QueryFeedbackView'),
+	Paginator = require('./components/Paginator'),
+
 	Viewer = require('./components/Viewer'),
 	appDispatcher = require('./appDispatcher'),
 	qs = require("qs");
@@ -23,7 +25,12 @@ var App = React.createClass({
 		if(this.getQuery().query && this.getQuery().coll) {
 			appDispatcher.dispatch({
 				actionType: 'query-update',
-				params: {query: this.getQuery().query || "", coll: this.getQuery().coll || "boeken", facets: this.getQuery().facets || {}}
+				params: {
+					query: this.getQuery().query || "", 
+					coll: this.getQuery().coll || "boeken", 
+					facets: this.getQuery().facets || {},
+					page: this.getQuery().page || 1
+				}
 			});
 		}
 	},
@@ -50,7 +57,7 @@ var App = React.createClass({
 			actionType: 'result-update',
 			records: data.records,
 			numberOfRecords: data.numberOfRecords,
-			facets: data.facets
+			facets: data.facets,
 		});
 	},
 
@@ -73,6 +80,7 @@ var Results = React.createClass({
 				<FacetView periode="Periode" spatial="Verspreidingsgebied" type="Soort bericht" shelfmark="Herkomst" typeFacet="Tijschriftonderdeel" />
 				<QueryFeedbackView anp="radiobulletins" ddd="kranten" boeken="boeken" dts="tijdschriften" periode="Periode" spatial="Verspreidingsgebied" type="Soort bericht" shelfmark="Herkomst" typeFacet="Tijschriftonderdeel" />
         		<ResultView />
+        		<Paginator maxperpage="10" range="2" />
 			</div>
 		);
 	}
@@ -103,17 +111,21 @@ var routes = (
 	</Route>
 );
 
-Router.HistoryLocation.addChangeListener(function (event) {
+Router.HashLocation.addChangeListener(function (event) {
 	if(event.type === "pop") {
 		var params = qs.parse(event.path.replace(/^.*\?/, "").replace(/#.*$/, ""));
 		appDispatcher.dispatch({
 			actionType: 'query-reset',
-			params: {query: params.query || "", coll: params.coll || "boeken", facets: params.facets || {}}
+			params: {
+				query: params.query || "", 
+				coll: params.coll || "boeken", 
+				facets: params.facets || {},
+				page: params.page || 1
+			}
 		});
 	}
-	console.log(event.type, event);
 });
 
-Router.run(routes, Router.HistoryLocation, function(Handler) {
+Router.run(routes, Router.HashLocation, function(Handler) {
 	React.render(<Handler />, document.getElementById('app'));
 });

@@ -33,7 +33,7 @@ var SearchForm = React.createClass({
 	dispatchQuery(event) {
 		appDispatcher.dispatch({
 			actionType: 'query-update',
-			params: {query: this.state.query, coll: this.state.coll, facets: {}}
+			params: {query: this.state.query, coll: this.state.coll, facets: {}, page: 1}
 		});
 
 		if(typeof event !== 'undefined') { return event.preventDefault(); }

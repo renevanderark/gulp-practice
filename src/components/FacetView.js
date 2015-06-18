@@ -48,7 +48,8 @@ var FacetView = React.createClass({
 			params: {
 				query: QueryParams.data.query,
 				coll: QueryParams.data.coll,
-				facets: assign(QueryParams.data.facets || {}, params || {})
+				facets: assign(QueryParams.data.facets || {}, params || {}),
+				page: 1
 			}
 		});
 	},

@@ -6,7 +6,8 @@ class QueryParams extends AbstractStore {
 		this.data = {
 			query: "",
 			coll: "boeken",
-			facets: {}
+			facets: {},
+			page: 1
 		}
 	}
 }
