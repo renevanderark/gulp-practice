@@ -42,18 +42,18 @@ var QueryFeedbackView = React.createClass({
 		if(!this.state.queryParams.facets) { return; }
 		var _self = this;
 		return Object.keys(this.state.queryParams.facets).map(function(key, i) {
-			return (<span className="blocky" key={i}>
-				<span className="blocky">{facetString.getFacetName(_self.props, key)}:</span>
-				<a onClick={_self.removeFilter} data-facetvalue={_self.state.queryParams.facets[key][0]} data-facetname={key}>
+			return (
+				<a key={i} onClick={_self.removeFilter} data-facetvalue={_self.state.queryParams.facets[key][0]} data-facetname={key}>
+					<span className="inner">{facetString.getFacetName(_self.props, key)}:</span>
 					{facetString.getFacetQueryValue(_self.state.queryParams.facets[key][0])}
 				</a>
-			</span>);
+			);
 		});
 	},
 
 	render() {
 		return (
-			<div>
+			<div className="feedback-view">
 				<h3>Gezocht op {this.state.queryParams.query === "" ? "alles" : this.state.queryParams.query} in {this.getCollName()}</h3>
 				{ this.renderFacetFilters() }
 			</div>

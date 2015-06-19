@@ -40,7 +40,7 @@ var ResultView = React.createClass({
 			return (<div>Bezig met zoeken...</div>);
 		} else if(ResultSet.data.numberOfRecords > 0) {
 			return (
-				<div>
+				<div className="result-view">
 					<h2>Gevonden: {ResultSet.data.numberOfRecords} </h2>
 					{ResultSet.data.results.map(function(obj, i) {
 						return (

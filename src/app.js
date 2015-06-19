@@ -64,9 +64,15 @@ var App = React.createClass({
 	render() {
 		return (
 			<div>
-				<Link to="app">Home</Link>
-				<SearchForm />
-				<RouteHandler />
+				<header>
+					<nav>
+						<Link to="app">Home</Link>
+					</nav>
+				</header>
+				<main>
+					<SearchForm />
+					<RouteHandler />
+				</main>
 			</div>
 		);		
 	}
@@ -127,5 +133,5 @@ Router.HashLocation.addChangeListener(function (event) {
 });
 
 Router.run(routes, Router.HashLocation, function(Handler) {
-	React.render(<Handler />, document.getElementById('app'));
+	React.render(<Handler />, document.body);
 });

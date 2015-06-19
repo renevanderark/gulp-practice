@@ -61,7 +61,9 @@ var FacetView = React.createClass({
 			var _self = this;
 			return (
 				<div className="facet-view">
-					<h3>Facetten</h3>
+					<input type="checkbox" id="toggle-filters" />
+					<h3><label htmlFor="toggle-filters">Filters</label></h3>
+					<div>
 					{ResultSet.data.facets.map(function(fac, i) {
 						return (<div key={i}>
 							<h4>{facetString.getFacetName(_self.props, fac.name)}</h4>
@@ -76,6 +78,7 @@ var FacetView = React.createClass({
 							})}
 						</div>);
 					})}
+					</div>
 				</div>
 			);
 		}
