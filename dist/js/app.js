@@ -25232,12 +25232,24 @@ var App = React.createClass({
 			'div',
 			null,
 			React.createElement(
-				Link,
-				{ to: 'app' },
-				'Home'
+				'header',
+				null,
+				React.createElement(
+					'nav',
+					null,
+					React.createElement(
+						Link,
+						{ to: 'app' },
+						'Home'
+					)
+				)
 			),
-			React.createElement(SearchForm, null),
-			React.createElement(RouteHandler, null)
+			React.createElement(
+				'main',
+				null,
+				React.createElement(SearchForm, null),
+				React.createElement(RouteHandler, null)
+			)
 		);
 	}
 });
@@ -25305,7 +25317,7 @@ Router.HashLocation.addChangeListener(function (event) {
 });
 
 Router.run(routes, Router.HashLocation, function (Handler) {
-	React.render(React.createElement(Handler, null), document.getElementById('app'));
+	React.render(React.createElement(Handler, null), document.body);
 });
 
 },{"./api/search":210,"./appDispatcher":212,"./components/FacetView":213,"./components/Paginator":214,"./components/QueryFeedbackView":215,"./components/ResultView":216,"./components/SearchForm":217,"./components/Viewer":218,"./stores/QueryParams":221,"qs":3,"react":201,"react-router":32}],212:[function(require,module,exports){
@@ -25405,33 +25417,42 @@ var FacetView = React.createClass({
 			return React.createElement(
 				'div',
 				{ className: 'facet-view' },
+				React.createElement('input', { type: 'checkbox', id: 'toggle-filters' }),
 				React.createElement(
 					'h3',
 					null,
-					'Facetten'
+					React.createElement(
+						'label',
+						{ htmlFor: 'toggle-filters' },
+						'Filters'
+					)
 				),
-				ResultSet.data.facets.map(function (fac, i) {
-					return React.createElement(
-						'div',
-						{ key: i },
-						React.createElement(
-							'h4',
-							null,
-							facetString.getFacetName(_self.props, fac.name)
-						),
-						fac.values.map(function (val, j) {
-							return React.createElement(
-								'li',
-								{ key: j },
-								React.createElement(
-									'a',
-									{ onClick: _self.addFilter, 'data-facetname': fac.name, 'data-facetvalue': val },
-									facetString.getFacetValue(val)
-								)
-							);
-						})
-					);
-				})
+				React.createElement(
+					'div',
+					null,
+					ResultSet.data.facets.map(function (fac, i) {
+						return React.createElement(
+							'div',
+							{ key: i },
+							React.createElement(
+								'h4',
+								null,
+								facetString.getFacetName(_self.props, fac.name)
+							),
+							fac.values.map(function (val, j) {
+								return React.createElement(
+									'li',
+									{ key: j },
+									React.createElement(
+										'a',
+										{ onClick: _self.addFilter, 'data-facetname': fac.name, 'data-facetvalue': val },
+										facetString.getFacetValue(val)
+									)
+								);
+							})
+						);
+					})
+				)
 			);
 		}
 	}
@@ -25456,11 +25477,13 @@ var Paginator = React.createClass({
 		return {
 			page: 1,
 			numberOfRecords: 0,
-			numberOfPages: 0
+			numberOfPages: 0,
+			range: this.getCurrentRange()
 		};
 	},
 
 	componentDidMount: function componentDidMount() {
+		window.addEventListener('resize', this.handleResize);
 		ResultSet.addChangeListener(this._onChange);
 		QueryParams.addResetListener(this._onQueryChange);
 		QueryParams.addChangeListener(this._onQueryChange);
@@ -25471,32 +25494,40 @@ var Paginator = React.createClass({
 			numberOfRecords: ResultSet.data.numberOfRecords,
 			numberOfPages: parseInt(Math.ceil(ResultSet.data.numberOfRecords / this.props.maxperpage))
 		});
-		console.log(this.state);
 	},
 
 	_onQueryChange: function _onQueryChange() {
-		this.setState({ page: parseInt(QueryParams.data.page) });
-		console.log(this.state);
+		this.setState({ page: parseInt(QueryParams.data.page), numberOfPages: 0 });
 	},
 
 	componentWillUnmount: function componentWillUnmount() {
+		window.removeEventListener('resize', this.handleResize);
 		ResultSet.removeChangeListener(this._onChange);
 		QueryParams.removeChangeListener(this._onQueryChange);
 		QueryParams.removeResetListener(this._onQueryChange);
 	},
 
+	getCurrentRange: function getCurrentRange() {
+		var calced = parseInt(Math.floor(window.innerWidth / 100));
+		return calced > 10 ? 10 : calced;
+	},
+
+	handleResize: function handleResize(e) {
+		this.setState({ range: this.getCurrentRange() });
+	},
+
 	getPages: function getPages() {
-		var start = this.state.page - this.props.range,
-		    end = this.state.page + parseInt(this.props.range);
+		var start = this.state.page - this.state.range,
+		    end = this.state.page + parseInt(this.state.range);
 
 		if (end > this.state.numberOfPages) {
-			start = this.state.numberOfPages - parseInt(this.props.range) * 2;
+			start = this.state.numberOfPages - parseInt(this.state.range) * 2;
 			end = this.state.numberOfPages;
 		}
 
 		if (start < 1) {
 			start = 1;
-			end = parseInt(this.props.range) * 2 + 1;
+			end = parseInt(this.state.range) * 2 + 1;
 			if (end > this.state.numberOfPages) {
 				end = this.state.numberOfPages;
 			}
@@ -25530,7 +25561,7 @@ var Paginator = React.createClass({
 			'>'
 		);
 		if (this.state.numberOfPages <= 1) {
-			return React.createElement('div', null);
+			return React.createElement('div', { className: 'paginator' });
 		} else {
 			return React.createElement(
 				'div',
@@ -25612,19 +25643,15 @@ var QueryFeedbackView = React.createClass({
 		var _self = this;
 		return Object.keys(this.state.queryParams.facets).map(function (key, i) {
 			return React.createElement(
-				'span',
-				{ className: 'blocky', key: i },
+				'a',
+				{ key: i, onClick: _self.removeFilter, 'data-facetvalue': _self.state.queryParams.facets[key][0], 'data-facetname': key },
 				React.createElement(
 					'span',
-					{ className: 'blocky' },
+					{ className: 'inner' },
 					facetString.getFacetName(_self.props, key),
 					':'
 				),
-				React.createElement(
-					'a',
-					{ onClick: _self.removeFilter, 'data-facetvalue': _self.state.queryParams.facets[key][0], 'data-facetname': key },
-					facetString.getFacetQueryValue(_self.state.queryParams.facets[key][0])
-				)
+				facetString.getFacetQueryValue(_self.state.queryParams.facets[key][0])
 			);
 		});
 	},
@@ -25632,7 +25659,7 @@ var QueryFeedbackView = React.createClass({
 	render: function render() {
 		return React.createElement(
 			'div',
-			null,
+			{ className: 'feedback-view' },
 			React.createElement(
 				'h3',
 				null,
@@ -25700,7 +25727,7 @@ var ResultView = React.createClass({
 		} else if (ResultSet.data.numberOfRecords > 0) {
 			return React.createElement(
 				'div',
-				null,
+				{ className: 'result-view' },
 				React.createElement(
 					'h2',
 					null,
